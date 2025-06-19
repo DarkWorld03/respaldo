@@ -1,12 +1,14 @@
 // guardarYEnviar.js
+require("dotenv").config(); // 👉 Cargar variables de entorno
+
 const fs = require("fs");
 const path = require("path");
 const axios = require("axios");
 const FormData = require("form-data");
 const scrapeGuildData = require("./scraperGuild");
 
-const TELEGRAM_BOT_TOKEN = "8153113052:AAEK4mFGQdu_vLY2AP2Agq3zYTnmwiIE7LE";
-const CHAT_ID = "909764344";
+const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
+const CHAT_ID = process.env.CHAT_ID;
 
 async function guardarYEnviarDatos() {
   const data = await scrapeGuildData();
@@ -55,7 +57,7 @@ async function guardarYEnviarDatos() {
     console.log("✅ Enviado por Telegram con éxito.");
   } catch (error) {
     console.error("❌ Error enviando el archivo por Telegram:", error.response?.data || error.message);
-    throw error; // para que el servidor también detecte el fallo
+    throw error;
   }
 }
 
