@@ -6,7 +6,7 @@ async function scrapeGuildData() {
     const browser = await puppeteer.launch({
       headless: "new",
       args: ["--no-sandbox", "--disable-setuid-sandbox"],
-      // No usar executablePath en Render, Puppeteer usará Chromium que descarga automáticamente
+      executablePath: "/usr/bin/google-chrome", // Usa Chrome preinstalado en Render
     });
 
     const page = await browser.newPage();
@@ -27,9 +27,7 @@ async function scrapeGuildData() {
     });
 
     await page.waitForSelector('a[href^="/profile/"]', { timeout: 30000 });
-    await page.waitForSelector("span.text-base.font-semibold", {
-      timeout: 30000,
-    });
+    await page.waitForSelector("span.text-base.font-semibold", { timeout: 30000 });
 
     const guildData = await page.evaluate(() => {
       const guildName =
@@ -56,3 +54,5 @@ async function scrapeGuildData() {
 }
 
 module.exports = scrapeGuildData;
+
+
