@@ -2,14 +2,38 @@ const puppeteer = require("puppeteer-core");
 
 async function scrapeGuildData() {
   try {
-    const browser = await puppeteer.launch({
+    // Rutas posibles de Chromium en Render
+    const possiblePaths = [
+      "/usr/bin/google-chrome-stable",
+      "/usr/bin/google-chrome",
+      "/usr/bin/chromium-browser",
+      "/usr/bin/chromium",
+    ];
+
+    // Función para probar qué ruta existe
+    const fs = require("fs");
+    let executablePath = null;
+    for (const path of possiblePaths) {
+      if (fs.existsSync(path)) {
+        executablePath = path;
+        break;
+      }
+    }
+
+    // Configuración para lanzar Puppeteer
+    const launchOptions = {
       headless: "new",
-      executablePath: "/usr/bin/chromium-browser",  // intenta esta ruta primero
       args: ["--no-sandbox", "--disable-setuid-sandbox"],
-    });
+    };
 
-    // resto del código igual
+    if (executablePath) {
+      launchOptions.executablePath = executablePath;
+      console.log("Usando Chromium en:", executablePath);
+    } else {
+      console.log("No se encontró Chromium instalado. Puppeteer descargará su Chromium.");
+    }
 
+    const browser = await puppeteer.launch(launchOptions);
 
     const page = await browser.newPage();
 
