@@ -1,5 +1,4 @@
-// guardarYEnviar.js
-require("dotenv").config(); // 👉 Cargar variables de entorno
+require("dotenv").config();
 
 const fs = require("fs");
 const path = require("path");
@@ -61,12 +60,10 @@ async function guardarYEnviarDatos() {
   }
 }
 
-// Ejecutar solo si se corre directamente: node guardarYEnviar.js
 if (require.main === module) {
   guardarYEnviarDatos().catch((err) => {
     console.error("❌ Error en ejecución directa:", err);
   });
 }
 
-// Exportar función para usar en server.js
 module.exports = guardarYEnviarDatos;
