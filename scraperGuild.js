@@ -4,9 +4,12 @@ async function scrapeGuildData() {
   try {
     const browser = await puppeteer.launch({
       headless: "new",
-      executablePath: "/usr/bin/google-chrome",
+      executablePath: "/usr/bin/chromium-browser",  // intenta esta ruta primero
       args: ["--no-sandbox", "--disable-setuid-sandbox"],
     });
+
+    // resto del código igual
+
 
     const page = await browser.newPage();
 
