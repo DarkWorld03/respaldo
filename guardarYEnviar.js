@@ -60,6 +60,7 @@ async function guardarYEnviarDatos() {
   }
 }
 
+// Ejecutar solo si se corre directamente: node guardarYEnviar.js
 if (require.main === module) {
   guardarYEnviarDatos().catch((err) => {
     console.error("❌ Error en ejecución directa:", err);

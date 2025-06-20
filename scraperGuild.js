@@ -1,11 +1,10 @@
-const puppeteer = require("puppeteer"); // usa puppeteer completo
+const puppeteer = require("puppeteer");
 
 async function scrapeGuildData() {
   try {
     const browser = await puppeteer.launch({
-      headless: "new",
+      headless: true,
       args: ["--no-sandbox", "--disable-setuid-sandbox"],
-      // No especificar executablePath para que Puppeteer use su Chromium
     });
 
     const page = await browser.newPage();
@@ -28,26 +27,32 @@ async function scrapeGuildData() {
     await page.waitForSelector('a[href^="/profile/"]', { timeout: 30000 });
     await page.waitForSelector("span.text-base.font-semibold", { timeout: 30000 });
 
+    // Espera adicional para que carguen todos los datos
+    await new Promise((resolve) => setTimeout(resolve, 2000));
+
     const guildData = await page.evaluate(() => {
       const guildName =
-        document.querySelector("h2.text-center.text-2xl.font-bold")?.innerText || "Desconocida";
+        document.querySelector("h2.text-center.text-2xl.font-bold.text-neutral-100")?.innerText ||
+        "Nombre no encontrado";
+
       const players = Array.from(document.querySelectorAll('a[href^="/profile/"]')).map(
         (player, index) => {
           const pointsElements = document.querySelectorAll("span.text-base.font-semibold");
           return {
             name: player.innerText.trim() || "Sin nombre",
-            id: player.getAttribute("href").replace("/profile/", ""),
+            id: player.getAttribute("href").replace("/profile/", "") || "ID desconocido",
             points: pointsElements[index]?.innerText.trim() || "0",
           };
         }
       );
+
       return { guildName, players };
     });
 
     await browser.close();
     return guildData;
   } catch (error) {
-    console.error("❌ Error en scraper:", error);
+    console.error("❌ Error en scraperGuild.js:", error);
     return null;
   }
 }
